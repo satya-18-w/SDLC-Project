@@ -8,7 +8,7 @@ class GroqLLM:
         self.model=model
         self.api_key=api_key
         
-    def get_llm_model(self):
+    def get_groq_model(self):
         try:
             if self.user_controls_input:
                 groq_api_key=self.user_controls_input["GROQ_API_KEY"]
