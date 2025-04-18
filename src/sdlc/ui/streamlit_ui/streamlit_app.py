@@ -109,4 +109,65 @@ def load_app():
             return
         
         
+        ## Graph Builder
+        graph_builder=GraphBuilder(model)
+        try:
+            graph=graph_builder.setup_graph()
+            graph_executor=GraphExecutor(graph)
+            
+        except Exception as e:
+            st.error(f"Error: Graph setup Failed {e}")
+            return
         
+        
+        tabs=st.tabs(["Project Requirement","User Stories","Design Document","Code Generation","Test Cases","QA Testing","Deployment","Download Artifacts"])
+        
+        
+        # -------------------------------------------------tab-1----------------------------------------
+        # Project Requirement
+        with tabs[0]:
+            st.header("Project Requirement")
+            project_name=st.text_input("Enter your Project Name :",value=st.session_state.get["project_name"])
+            st.session_state["project_name"]=project_name
+            
+            if st.session_state.stage==Constants.PROJECT_INITIALIOZATION:
+                if st.button("🚀 Let's Start"):
+                    if not project_name:
+                        st.error("Error: Please Enter your Project Name")
+                        st.stop()
+                        
+                    graph_response=graph_executor.start_workflow(project_name)
+                    st.session_state.task_id=graph_response["task_id"]
+                    st.session_state.state=graph_response["state"]
+                    st.session_state.stage = Constants.REQUIREMENT_COLLECTION
+                    st.rerun()
+                    
+                    
+            # If stage has progressed belond initialization , show requirements input and details
+            if st.session_state.stage in [Constants.REQUIREMENT_COLLECTION,Constants.GENERATE_USER_STORIES]:
+                requirements_input=st.text_area(
+                    "Enter the requirements. Write each requirement in a new line",
+                    value="\n".join(st.session_state.get("requirements",[]))
+                )
+                if st.button("Submit Requirements"):
+                    requirements=[req.strip() for req in requirements_input.split("\n") if req.strip()]
+                    st.session_state.requirements=requirements
+                    if not requirements:
+                        st.error("Error: Please Enter the Requirements")
+                        
+                        
+                    else:
+                        st.success("Project details saved Successfully")
+                        st.subheader("Project Details:")
+                        st.write(f"Project Name: {project_name}")
+                        st.subheader("Project Requirements:")
+                        for req in requirements:
+                            st.write(req)
+                            
+                            
+                        graph_response=graph_executor.generate_stories(st.session_state.task_id,requirements)
+                        st.session_state.stage=Constants.GENERATE_USER_STORIES
+                        st.session_state.state=graph_response["state"]
+                        st.rerun()
+                        
+                        
