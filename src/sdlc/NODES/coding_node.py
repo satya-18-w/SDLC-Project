@@ -228,6 +228,11 @@ class CodingNode:
     def qa_review(self, state: SDLCState):
         pass
     
+    def qa_testing_router(self,state: SDLCState):
+        """
+            Evaluates QA testing review is required or not.
+        """
+        return state.get("qa_testing_review_status", "approved")
     
     def deployment(self,state: SDLCState):
         """

@@ -4,7 +4,7 @@ from src.sdlc.STATE.state import SDLCState
 from src.sdlc.utils.Utility import Utility
 from loguru import logger
 
-class MerkdownArtifactsNode:
+class MarkdownArtifactsNode:
     """
     Graph Node for generating markdown artifacts for sdlc process
     This Node generates markdown files for:
