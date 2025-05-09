@@ -1,9 +1,9 @@
 from src.sdlc.STATE.state import SDLCState
 import uuid
 import src.sdlc.utils.constants as cons
-
+from src.sdlc.cache.redis_cache import 
 from loguru import logger
-
+import redis 
 
 class GraphExecutor:
     def __init__(self,graph):
@@ -29,4 +29,4 @@ class GraphExecutor:
     
     #User story Generation
     def generate_stories(self,task_id:str,requirements:list[str]):
-        saved_state=
+        
